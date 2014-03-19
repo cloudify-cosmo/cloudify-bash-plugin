@@ -64,7 +64,7 @@ class TestBashRunner(unittest.TestCase):
             'start': 'ls.sh'
         }
 
-        run(self.create_context({}), scripts=scripts)
+        run(self.create_context({'scripts': scripts}))
 
     def test_no_script_path_no_scripts(self):
 
