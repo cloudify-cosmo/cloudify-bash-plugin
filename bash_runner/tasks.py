@@ -50,7 +50,8 @@ def run(ctx, script_path=None, **kwargs):
         operation_simple_name = ctx.operation.split('.')[-1:].pop()
         scripts = ctx.properties['scripts']
         if operation_simple_name not in scripts:
-            ctx.logger.info("No script mapping found for operation {0}. Nothing to do.".format(operation_simple_name))
+            ctx.logger.info("No script mapping found for operation {0}. "
+                            "Nothing to do.".format(operation_simple_name))
             return None
         sh = ctx.get_resource(scripts[operation_simple_name])
         return bash(sh, ctx)

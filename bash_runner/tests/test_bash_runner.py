@@ -124,6 +124,7 @@ class TestBashRunner(unittest.TestCase):
         out = run(self.create_context({'scripts': scripts}))
         self.assertIsNone(out)
 
+
 class BashRunnerMockCloudifyContext(MockCloudifyContext):
 
     def get_resource(self, resource_path, target_path=None):
