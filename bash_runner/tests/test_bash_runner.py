@@ -115,6 +115,14 @@ class TestBashRunner(unittest.TestCase):
         for key in expected_dict:
             self.assertEqual(expected_dict[key], actual_dict[key])
 
+    def test_no_script_mapping_for_operation(self):
+
+        scripts = {
+            'stop': 'ls.sh'
+        }
+
+        out = run(self.create_context({'scripts': scripts}))
+        self.assertIsNone(out)
 
 class BashRunnerMockCloudifyContext(MockCloudifyContext):
 
