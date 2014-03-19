@@ -25,7 +25,7 @@ from cloudify.decorators import operation
 
 
 @operation
-def run(ctx, script_path=None, scripts=None, **kwargs):
+def run(ctx, script_path=None, **kwargs):
     """
     Execute bash scripts.
 
@@ -43,12 +43,16 @@ def run(ctx, script_path=None, scripts=None, **kwargs):
             script to run.
     """
 
-    if scripts:
-        operation_simple_name = ctx.operation.split('.')[-1:].pop()
-        sh = ctx.get_resource(scripts[operation_simple_name])
-        return bash(sh, ctx)
     if script_path:
         sh = ctx.get_resource(script_path)
+        return bash(sh, ctx)
+    if 'scripts' in ctx.properties:
+        operation_simple_name = ctx.operation.split('.')[-1:].pop()
+        scripts = ctx.properties['scripts']
+        if operation_simple_name not in scripts:
+            raise RuntimeError("Did not find mapping for {0} in scripts : {0}"
+                               .format(operation_simple_name, scripts))
+        sh = ctx.get_resource(scripts[operation_simple_name])
         return bash(sh, ctx)
 
     raise RuntimeError('No script to run')
