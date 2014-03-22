@@ -128,8 +128,10 @@ class TestBashRunner(unittest.TestCase):
 
         out = run(self.create_context({}), script_path="test_logging.sh")
         line = out.splitlines()
-        self.assertEqual(line[0], "[INFO] [test_logging.sh] THIS IS AN INFO PRINT")
-        self.assertEqual(line[1], "[ERROR] [test_logging.sh] THIS IS AN ERROR PRINT")
+        self.assertEqual(line[0],
+                         "[INFO] [test_logging.sh] THIS IS AN INFO PRINT")
+        self.assertEqual(line[1],
+                         "[ERROR] [test_logging.sh] THIS IS AN ERROR PRINT")
 
 
 class BashRunnerMockCloudifyContext(MockCloudifyContext):

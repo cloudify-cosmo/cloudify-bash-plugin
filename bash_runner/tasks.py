@@ -170,7 +170,8 @@ def setup_environment(ctx):
     env['CLOUDIFY_MANAGER_IP'] = get_manager_ip().encode('utf-8')
     env['CLOUDIFY_EXECUTION_ID'] = ctx.execution_id.encode('utf-8')
 
-    logging_script_path = os.path.join(dirname(resources.__file__), "logging.sh")
+    logging_script_path = os.path.join(dirname(resources.__file__),
+                                       "logging.sh")
 
     env['CLOUDIFY_LOGGING'] = logging_script_path
 
