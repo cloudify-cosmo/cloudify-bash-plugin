@@ -83,6 +83,8 @@ def execute(command, ctx):
         # Wait for data to become available
         select.select([process.stdout, process.stderr], [], [])
 
+        return_code = process.poll()
+
         # Try reading some data from each
         stdout_piece = read_async(process.stdout)
         stderr_piece = read_async(process.stderr)
@@ -94,7 +96,6 @@ def execute(command, ctx):
 
         stdout += stdout_piece
         stderr += stderr_piece
-        return_code = process.poll()
 
         if return_code is not None:
             break
