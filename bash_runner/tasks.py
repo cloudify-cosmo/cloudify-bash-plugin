@@ -21,6 +21,7 @@ import os
 import errno
 
 from cloudify import utils
+
 from cloudify.utils import get_manager_ip
 from cloudify.decorators import operation
 
@@ -103,10 +104,7 @@ def execute(command, ctx):
             if is_error_log(stdout_piece):
                 ctx.logger.error(stdout_piece)
         if stderr_piece:
-            if is_info_log(stderr_piece):
-                ctx.logger.info(stderr_piece)
-            if is_error_log(stderr_piece):
-                ctx.logger.error(stderr_piece)
+            ctx.logger.error(stderr_piece)
 
         stdout += stdout_piece
         stderr += stderr_piece
