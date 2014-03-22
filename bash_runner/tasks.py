@@ -97,7 +97,7 @@ def execute(command, ctx):
         stdout += stdout_piece
         stderr += stderr_piece
 
-        if return_code is not None:
+        if return_code is not None and not stdout_piece and not stderr_piece:
             break
 
     ctx.logger.info('Done running command (return_code=%d): %s'
@@ -118,7 +118,7 @@ def make_async(fd):
 # ignoring EAGAIN errors
 def read_async(fd):
     try:
-        return fd.read()
+        return fd.readline()
     except IOError, e:
         if e.errno != errno.EAGAIN:
             raise e
