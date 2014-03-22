@@ -160,7 +160,8 @@ def setup_environment(ctx):
     # assuming properties are flat.
     # inject each property as an environment variable.
     for key, value in flatten(ctx.properties).iteritems():
-        env[key] = repr(value)
+        env[key] = repr(value) \
+            if isinstance(value, int) else value.encode('utf-8')
 
     return env
 
