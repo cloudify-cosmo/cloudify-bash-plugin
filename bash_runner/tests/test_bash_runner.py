@@ -21,7 +21,7 @@ from cloudify.mocks import MockCloudifyContext
 from cloudify.constants import MANAGER_IP_KEY, \
     MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY
 
-from bash_runner.tasks import run
+from bash_runner.tasks import run, ProcessException
 import bash_runner.tests as test_path
 
 
@@ -127,6 +127,13 @@ class TestBashRunner(unittest.TestCase):
 
         out = run(self.create_context({'scripts': scripts}))
         self.assertIsNone(out)
+
+    def test_bad_script(self):
+        try:
+            run(self.create_context({}), script_path="bad.sh")
+        except ProcessException as e:
+            self.assertTrue('bad_command: command not found' in e.stderr)
+            self.assertTrue(e.exit_code is not 0)
 
 
 class BashRunnerMockCloudifyContext(MockCloudifyContext):
