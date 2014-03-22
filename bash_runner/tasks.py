@@ -63,12 +63,16 @@ def run(ctx, script_path=None, **kwargs):
     raise RuntimeError('No script to run')
 
 
+def strip_level(line, level):
+    return line.replace('[{0}] '.format(level), '', 1)
+
+
 def is_info_log(line):
-    return '[INFO]' in line
+    return line.startswith('[INFO]')
 
 
 def is_error_log(line):
-    return '[ERROR]' in line
+    return line.startswith('[ERROR]')
 
 
 def bash(path, ctx):
@@ -100,9 +104,11 @@ def execute(command, ctx):
 
         if stdout_piece:
             if is_info_log(stdout_piece):
-                ctx.logger.info(stdout_piece)
+                ctx.logger.info(strip_level(stdout_piece,
+                                            'INFO'))
             if is_error_log(stdout_piece):
-                ctx.logger.error(stdout_piece)
+                ctx.logger.error(strip_level(stdout_piece,
+                                             'ERROR'))
         if stderr_piece:
             ctx.logger.error(stderr_piece)
 
