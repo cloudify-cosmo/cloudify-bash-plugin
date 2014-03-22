@@ -77,7 +77,9 @@ class TestBashRunner(unittest.TestCase):
     def test_environment_injection(self):
 
         properties = {
-            'port': 8080
+            'port': 8080,  # test integer
+            'url': 'http://localhost',  # test string
+            'node_id': u'node_id'  # test unicode
         }
 
         out = run(self.create_context(properties), script_path="env.sh")
@@ -89,7 +91,9 @@ class TestBashRunner(unittest.TestCase):
             'CLOUDIFY_MANAGER_IP': 'localhost',
             'CLOUDIFY_EXECUTION_ID': 'test',
             'CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT': 'mock-url/test',
-            'port': 8080
+            'port': 8080,
+            'url': 'http://localhost',
+            'node_id': 'node_id'
         }
 
         actual_dict = properties_to_dict(out)
