@@ -13,6 +13,7 @@
 #    * See the License for the specific language governing permissions and
 #    * limitations under the License.
 import collections
+from os.path import dirname
 import subprocess
 import fcntl
 import select
@@ -22,6 +23,8 @@ import errno
 from cloudify import utils
 from cloudify.utils import get_manager_ip
 from cloudify.decorators import operation
+
+from bash_runner import resources
 
 
 @operation
@@ -59,11 +62,16 @@ def run(ctx, script_path=None, **kwargs):
     raise RuntimeError('No script to run')
 
 
+def is_info_log(line):
+    return '[INFO]' in line
+
+
+def is_error_log(line):
+    return '[ERROR]' in line
+
+
 def bash(path, ctx):
-    with open(path, "r") as myfile:
-        cat = myfile.read()
-    ctx.logger.info('Executing this file: %s with content: \n%s' % (path, cat))
-    return execute('/bin/bash %s' % path, ctx)
+    return execute("/bin/bash {0}".format(path), ctx)
 
 
 def execute(command, ctx):
@@ -90,9 +98,15 @@ def execute(command, ctx):
         stderr_piece = read_async(process.stderr)
 
         if stdout_piece:
-            ctx.logger.info(stdout_piece)
+            if is_info_log(stdout_piece):
+                ctx.logger.info(stdout_piece)
+            if is_error_log(stdout_piece):
+                ctx.logger.error(stdout_piece)
         if stderr_piece:
-            ctx.logger.error(stderr_piece)
+            if is_info_log(stderr_piece):
+                ctx.logger.info(stderr_piece)
+            if is_error_log(stderr_piece):
+                ctx.logger.error(stderr_piece)
 
         stdout += stdout_piece
         stderr += stderr_piece
@@ -151,6 +165,10 @@ def setup_environment(ctx):
     env['CLOUDIFY_DEPLOYMENT_ID'] = ctx.deployment_id.encode('utf-8')
     env['CLOUDIFY_MANAGER_IP'] = get_manager_ip().encode('utf-8')
     env['CLOUDIFY_EXECUTION_ID'] = ctx.execution_id.encode('utf-8')
+
+    logging_script_path = os.path.join(dirname(resources.__file__), "logging.sh")
+
+    env['CLOUDIFY_LOGGING'] = logging_script_path
 
     url = '{0}/{1}'.format(
         utils.get_manager_file_server_blueprints_root_url(),
