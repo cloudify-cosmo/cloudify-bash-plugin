@@ -13,6 +13,7 @@
 #    * See the License for the specific language governing permissions and
 #    * limitations under the License.
 import collections
+from os.path import dirname
 import subprocess
 import fcntl
 import select
@@ -20,8 +21,11 @@ import os
 import errno
 
 from cloudify import utils
+
 from cloudify.utils import get_manager_ip
 from cloudify.decorators import operation
+
+from bash_runner import resources
 
 
 @operation
@@ -59,11 +63,20 @@ def run(ctx, script_path=None, **kwargs):
     raise RuntimeError('No script to run')
 
 
+def strip_level(line, level):
+    return line.replace('[{0}] '.format(level), '', 1)
+
+
+def is_info_log(line):
+    return line.startswith('[INFO]')
+
+
+def is_error_log(line):
+    return line.startswith('[ERROR]')
+
+
 def bash(path, ctx):
-    with open(path, "r") as myfile:
-        cat = myfile.read()
-    ctx.logger.info('Executing this file: %s with content: \n%s' % (path, cat))
-    return execute('/bin/bash %s' % path, ctx)
+    return execute("/bin/bash {0}".format(path), ctx)
 
 
 def execute(command, ctx):
@@ -83,20 +96,26 @@ def execute(command, ctx):
         # Wait for data to become available
         select.select([process.stdout, process.stderr], [], [])
 
+        return_code = process.poll()
+
         # Try reading some data from each
         stdout_piece = read_async(process.stdout)
         stderr_piece = read_async(process.stderr)
 
         if stdout_piece:
-            ctx.logger.info(stdout_piece)
+            if is_info_log(stdout_piece):
+                ctx.logger.info(strip_level(stdout_piece,
+                                            'INFO'))
+            if is_error_log(stdout_piece):
+                ctx.logger.error(strip_level(stdout_piece,
+                                             'ERROR'))
         if stderr_piece:
             ctx.logger.error(stderr_piece)
 
         stdout += stdout_piece
         stderr += stderr_piece
-        return_code = process.poll()
 
-        if return_code is not None:
+        if return_code is not None and not stdout_piece and not stderr_piece:
             break
 
     ctx.logger.info('Done running command (return_code=%d): %s'
@@ -117,7 +136,7 @@ def make_async(fd):
 # ignoring EAGAIN errors
 def read_async(fd):
     try:
-        return fd.read()
+        return fd.readline()
     except IOError, e:
         if e.errno != errno.EAGAIN:
             raise e
@@ -150,6 +169,11 @@ def setup_environment(ctx):
     env['CLOUDIFY_DEPLOYMENT_ID'] = ctx.deployment_id.encode('utf-8')
     env['CLOUDIFY_MANAGER_IP'] = get_manager_ip().encode('utf-8')
     env['CLOUDIFY_EXECUTION_ID'] = ctx.execution_id.encode('utf-8')
+
+    logging_script_path = os.path.join(dirname(resources.__file__),
+                                       "logging.sh")
+
+    env['CLOUDIFY_LOGGING'] = logging_script_path
 
     url = '{0}/{1}'.format(
         utils.get_manager_file_server_blueprints_root_url(),

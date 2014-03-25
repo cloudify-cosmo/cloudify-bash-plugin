@@ -1,0 +1,5 @@
+#!/bin/sh
+. ${CLOUDIFY_LOGGING}
+
+info THIS IS AN INFO PRINT
+error THIS IS AN ERROR PRINT
