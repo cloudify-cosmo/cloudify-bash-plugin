@@ -21,7 +21,7 @@ from cloudify.mocks import MockCloudifyContext
 from cloudify.constants import MANAGER_IP_KEY, \
     MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY
 
-from bash_runner.tasks import run
+from bash_runner.tasks import run, ProcessException
 import bash_runner.tests as test_path
 
 
@@ -77,7 +77,9 @@ class TestBashRunner(unittest.TestCase):
     def test_environment_injection(self):
 
         properties = {
-            'port': 8080
+            'port': 8080,  # test integer
+            'url': 'http://localhost',  # test string
+            'node_id': u'node_id'  # test unicode
         }
 
         out = run(self.create_context(properties), script_path="env.sh")
@@ -89,7 +91,9 @@ class TestBashRunner(unittest.TestCase):
             'CLOUDIFY_MANAGER_IP': 'localhost',
             'CLOUDIFY_EXECUTION_ID': 'test',
             'CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT': 'mock-url/test',
-            'port': 8080
+            'port': 8080,
+            'url': 'http://localhost',
+            'node_id': 'node_id'
         }
 
         actual_dict = properties_to_dict(out)
@@ -123,6 +127,13 @@ class TestBashRunner(unittest.TestCase):
 
         out = run(self.create_context({'scripts': scripts}))
         self.assertIsNone(out)
+
+    def test_bad_script(self):
+        try:
+            run(self.create_context({}), script_path="bad.sh")
+        except ProcessException as e:
+            self.assertTrue('bad_command: command not found' in e.stderr)
+            self.assertTrue(e.exit_code is not 0)
 
     def test_logging(self):
 
