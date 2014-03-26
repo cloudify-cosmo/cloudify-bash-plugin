@@ -21,7 +21,6 @@ import os
 import errno
 
 from cloudify import utils
-
 from cloudify.utils import get_manager_ip
 from cloudify.decorators import operation
 
@@ -29,7 +28,7 @@ from bash_runner import resources
 
 
 @operation
-def run(ctx, script_path=None, **kwargs):
+def run(ctx, script_path=None, log_all=False, **kwargs):
     """
     Execute bash scripts.
 
@@ -49,7 +48,7 @@ def run(ctx, script_path=None, **kwargs):
 
     if script_path:
         sh = ctx.get_resource(script_path)
-        return bash(sh, ctx)
+        return bash(sh, ctx, log_all)
     if 'scripts' in ctx.properties:
         operation_simple_name = ctx.operation.split('.')[-1:].pop()
         scripts = ctx.properties['scripts']
@@ -58,7 +57,7 @@ def run(ctx, script_path=None, **kwargs):
                             "Nothing to do.".format(operation_simple_name))
             return None
         sh = ctx.get_resource(scripts[operation_simple_name])
-        return bash(sh, ctx)
+        return bash(sh, ctx, log_all)
 
     raise RuntimeError('No script to run')
 
@@ -75,11 +74,11 @@ def is_error_log(line):
     return line.startswith('[ERROR]')
 
 
-def bash(path, ctx):
-    return execute("/bin/bash {0}".format(path), ctx)
+def bash(path, ctx, log_all):
+    return execute("/bin/bash {0}".format(path), ctx, log_all)
 
 
-def execute(command, ctx):
+def execute(command, ctx, log_all):
     ctx.logger.info('Running command: %s' % command)
     env = setup_environment(ctx)
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
@@ -103,7 +102,7 @@ def execute(command, ctx):
         stderr_piece = read_async(process.stderr)
 
         if stdout_piece:
-            if is_info_log(stdout_piece):
+            if is_info_log(stdout_piece) or log_all:
                 ctx.logger.info(strip_level(stdout_piece,
                                             'INFO'))
             if is_error_log(stdout_piece):
@@ -173,7 +172,11 @@ def setup_environment(ctx):
     logging_script_path = os.path.join(dirname(resources.__file__),
                                        "logging.sh")
 
+    file_server_script_path = os.path.join(dirname(resources.__file__),
+                                           "file_server.sh")
+
     env['CLOUDIFY_LOGGING'] = logging_script_path
+    env['CLOUDIFY_FILE_SERVER'] = file_server_script_path
 
     url = '{0}/{1}'.format(
         utils.get_manager_file_server_blueprints_root_url(),

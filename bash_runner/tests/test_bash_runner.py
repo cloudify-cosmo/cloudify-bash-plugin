@@ -19,7 +19,7 @@ import unittest
 
 from cloudify.mocks import MockCloudifyContext
 from cloudify.constants import MANAGER_IP_KEY, \
-    MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY
+    MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY, MANAGER_FILE_SERVER_URL_KEY
 
 from bash_runner.tasks import run, ProcessException
 import bash_runner.tests as test_path
@@ -40,20 +40,39 @@ def properties_to_dict(properties):
 
 class TestBashRunner(unittest.TestCase):
 
+    file_server_process = None
+
+    @classmethod
+    def setUpClass(cls):
+
+        resources_path = os.path.join(dirname(test_path.__file__),
+                                      "resources")
+
+        from bash_runner.tests.file_server import FileServer
+        from bash_runner.tests.file_server import PORT
+
+        cls.file_server_process = FileServer(resources_path)
+        cls.file_server_process.start()
+
+        os.environ[MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY] \
+            = "http://localhost:{0}".format(PORT)
+        os.environ[MANAGER_FILE_SERVER_URL_KEY] = \
+            "http://localhost:{0}".format(PORT)
+
+        os.environ[MANAGER_IP_KEY] = "localhost"
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.file_server_process.stop()
+
     def create_context(self, properties):
         return BashRunnerMockCloudifyContext(
             node_id='test',
-            blueprint_id='test',
+            blueprint_id='',
             deployment_id='test',
             execution_id='test',
             operation='cloudify.interfaces.lifecycle.start',
             properties=properties)
-
-    @classmethod
-    def setUpClass(cls):
-        os.environ[MANAGER_IP_KEY] = "localhost"
-        os.environ[MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY] \
-            = "mock-url"
 
     def test_script_path(self):
         run(self.create_context({}), script_path="ls.sh")
@@ -86,11 +105,11 @@ class TestBashRunner(unittest.TestCase):
 
         expected_dict = {
             'CLOUDIFY_NODE_ID': 'test',
-            'CLOUDIFY_BLUEPRINT_ID': 'test',
+            'CLOUDIFY_BLUEPRINT_ID': '',
             'CLOUDIFY_DEPLOYMENT_ID': 'test',
             'CLOUDIFY_MANAGER_IP': 'localhost',
             'CLOUDIFY_EXECUTION_ID': 'test',
-            'CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT': 'mock-url/test',
+            'CLOUDIFY_FILE_SERVER_BLUEPRINT_ROOT': 'http://localhost:53229/',
             'port': 8080,
             'url': 'http://localhost',
             'node_id': 'node_id'
@@ -143,6 +162,18 @@ class TestBashRunner(unittest.TestCase):
                          "[INFO] [test_logging.sh] THIS IS AN INFO PRINT")
         self.assertEqual(line[1],
                          "[ERROR] [test_logging.sh] THIS IS AN ERROR PRINT")
+
+    def test_download_resource(self):
+
+        expected_path = "/tmp/index.html"  # see test_file_server.sh
+        if os.path.exists(expected_path):  # cleanup
+            os.remove(expected_path)
+
+        run(self.create_context({}), script_path="test_file_server.sh",
+            log_all=True)
+
+        # check the download_resource actually worked
+        self.assertTrue(os.path.exists(expected_path))
 
 
 class BashRunnerMockCloudifyContext(MockCloudifyContext):
