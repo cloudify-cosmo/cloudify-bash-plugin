@@ -20,8 +20,9 @@ import unittest
 from cloudify.mocks import MockCloudifyContext
 from cloudify.constants import MANAGER_IP_KEY, \
     MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY, MANAGER_FILE_SERVER_URL_KEY
-
-from bash_runner.tasks import run, ProcessException
+from bash_runner.tasks import run_and_return_output
+from bash_runner.tasks import ProcessException
+from bash_runner.tasks import run
 import bash_runner.tests as test_path
 
 
@@ -75,7 +76,7 @@ class TestBashRunner(unittest.TestCase):
             properties=properties)
 
     def test_script_path(self):
-        run(self.create_context({}), script_path="ls.sh")
+        run_and_return_output(self.create_context({}), script_path="ls.sh")
 
     def test_scripts(self):
 
@@ -83,7 +84,7 @@ class TestBashRunner(unittest.TestCase):
             'start': 'ls.sh'
         }
 
-        run(self.create_context({'scripts': scripts}))
+        run_and_return_output(self.create_context({'scripts': scripts}))
 
     def test_no_script_path_no_scripts(self):
 
@@ -101,7 +102,8 @@ class TestBashRunner(unittest.TestCase):
             'node_id': u'node_id'  # test unicode
         }
 
-        out = run(self.create_context(properties), script_path="env.sh")
+        out = run_and_return_output(self.create_context(properties),
+                                    script_path="env.sh")
 
         expected_dict = {
             'CLOUDIFY_NODE_ID': 'test',
@@ -127,8 +129,8 @@ class TestBashRunner(unittest.TestCase):
             }
         }
 
-        out = run(self.create_context(properties),
-                  script_path="env-with-complex-prop.sh")
+        out = run_and_return_output(self.create_context(properties),
+                                    script_path="env-with-complex-prop.sh")
 
         expected_dict = {
             'port_a': 1
@@ -144,19 +146,21 @@ class TestBashRunner(unittest.TestCase):
             'stop': 'ls.sh'
         }
 
-        out = run(self.create_context({'scripts': scripts}))
+        out = run_and_return_output(self.create_context({'scripts': scripts}))
         self.assertIsNone(out)
 
     def test_bad_script(self):
         try:
-            run(self.create_context({}), script_path="bad.sh")
+            run_and_return_output(self.create_context({}),
+                                  script_path="bad.sh")
         except ProcessException as e:
             self.assertTrue('bad_command: command not found' in e.stderr)
             self.assertTrue(e.exit_code is not 0)
 
     def test_logging(self):
 
-        out = run(self.create_context({}), script_path="test_logging.sh")
+        out = run_and_return_output(self.create_context({}),
+                                    script_path="test_logging.sh")
         line = out.splitlines()
         self.assertEqual(line[0],
                          "[INFO] [test_logging.sh] THIS IS AN INFO PRINT")
@@ -169,8 +173,9 @@ class TestBashRunner(unittest.TestCase):
         if os.path.exists(expected_path):  # cleanup
             os.remove(expected_path)
 
-        run(self.create_context({}), script_path="test_file_server.sh",
-            log_all=True)
+        run_and_return_output(self.create_context({}),
+                              script_path="test_file_server.sh",
+                              log_all=False)
 
         # check the download_resource actually worked
         self.assertTrue(os.path.exists(expected_path))

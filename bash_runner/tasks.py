@@ -13,12 +13,12 @@
 #    * See the License for the specific language governing permissions and
 #    * limitations under the License.
 import collections
-from os.path import dirname
 import subprocess
 import fcntl
 import select
 import os
 import errno
+from os.path import dirname
 
 from cloudify import utils
 from cloudify.utils import get_manager_ip
@@ -29,6 +29,7 @@ from bash_runner import resources
 
 @operation
 def run(ctx, script_path=None, log_all=False, **kwargs):
+
     """
     Execute bash scripts.
 
@@ -46,9 +47,16 @@ def run(ctx, script_path=None, log_all=False, **kwargs):
             script to run.
     """
 
+    sh = get_script_to_run(ctx, script_path)
+    if sh is None:
+        return None
+    bash(sh, ctx, log_all)
+    return "[{0}] succeeded. return code 0".format(os.path.basename(sh))
+
+
+def get_script_to_run(ctx, script_path=None):
     if script_path:
-        sh = ctx.download_resource(script_path)
-        return bash(sh, ctx, log_all)
+        return ctx.download_resource(script_path)
     if 'scripts' in ctx.properties:
         operation_simple_name = ctx.operation.split('.')[-1:].pop()
         scripts = ctx.properties['scripts']
@@ -56,10 +64,16 @@ def run(ctx, script_path=None, log_all=False, **kwargs):
             ctx.logger.info("No script mapping found for operation {0}. "
                             "Nothing to do.".format(operation_simple_name))
             return None
-        sh = ctx.download_resource(scripts[operation_simple_name])
-        return bash(sh, ctx, log_all)
+        return ctx.download_resource(scripts[operation_simple_name])
 
     raise RuntimeError('No script to run')
+
+
+def run_and_return_output(ctx, script_path=None, log_all=False, **kwargs):
+    sh = get_script_to_run(ctx, script_path)
+    if sh is None:
+        return None
+    return bash(sh, ctx, log_all)
 
 
 def strip_level(line, level):
