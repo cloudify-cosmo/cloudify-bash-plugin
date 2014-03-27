@@ -47,7 +47,7 @@ def run(ctx, script_path=None, log_all=False, **kwargs):
     """
 
     if script_path:
-        sh = ctx.get_resource(script_path)
+        sh = ctx.download_resource(script_path)
         return bash(sh, ctx, log_all)
     if 'scripts' in ctx.properties:
         operation_simple_name = ctx.operation.split('.')[-1:].pop()
@@ -56,7 +56,7 @@ def run(ctx, script_path=None, log_all=False, **kwargs):
             ctx.logger.info("No script mapping found for operation {0}. "
                             "Nothing to do.".format(operation_simple_name))
             return None
-        sh = ctx.get_resource(scripts[operation_simple_name])
+        sh = ctx.download_resource(scripts[operation_simple_name])
         return bash(sh, ctx, log_all)
 
     raise RuntimeError('No script to run')

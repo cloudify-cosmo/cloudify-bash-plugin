@@ -178,6 +178,6 @@ class TestBashRunner(unittest.TestCase):
 
 class BashRunnerMockCloudifyContext(MockCloudifyContext):
 
-    def get_resource(self, resource_path, target_path=None):
+    def download_resource(self, resource_path, target_path=None):
         return os.path.join(dirname(test_path.__file__),
                             "resources", resource_path)
