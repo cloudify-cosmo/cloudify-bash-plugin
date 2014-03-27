@@ -49,7 +49,7 @@ def run(ctx, script_path=None, log_all=False, **kwargs):
 
     sh = get_script_to_run(ctx, script_path)
     if sh is None:
-        return ""
+        return None
     bash(sh, ctx, log_all)
     return "[{0}] succeeded. return code 0".format(os.path.basename(sh))
 
