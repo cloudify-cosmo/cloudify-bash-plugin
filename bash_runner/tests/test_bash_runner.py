@@ -102,7 +102,8 @@ class TestBashRunner(unittest.TestCase):
             'node_id': u'node_id'  # test unicode
         }
 
-        out = run_and_return_output(self.create_context(properties), script_path="env.sh")
+        out = run_and_return_output(self.create_context(properties),
+                                    script_path="env.sh")
 
         expected_dict = {
             'CLOUDIFY_NODE_ID': 'test',
@@ -129,7 +130,7 @@ class TestBashRunner(unittest.TestCase):
         }
 
         out = run_and_return_output(self.create_context(properties),
-                  script_path="env-with-complex-prop.sh")
+                                    script_path="env-with-complex-prop.sh")
 
         expected_dict = {
             'port_a': 1
@@ -150,14 +151,16 @@ class TestBashRunner(unittest.TestCase):
 
     def test_bad_script(self):
         try:
-            run_and_return_output(self.create_context({}), script_path="bad.sh")
+            run_and_return_output(self.create_context({}),
+                                  script_path="bad.sh")
         except ProcessException as e:
             self.assertTrue('bad_command: command not found' in e.stderr)
             self.assertTrue(e.exit_code is not 0)
 
     def test_logging(self):
 
-        out = run_and_return_output(self.create_context({}), script_path="test_logging.sh")
+        out = run_and_return_output(self.create_context({}),
+                                    script_path="test_logging.sh")
         line = out.splitlines()
         self.assertEqual(line[0],
                          "[INFO] [test_logging.sh] THIS IS AN INFO PRINT")
@@ -170,8 +173,9 @@ class TestBashRunner(unittest.TestCase):
         if os.path.exists(expected_path):  # cleanup
             os.remove(expected_path)
 
-        run_and_return_output(self.create_context({}), script_path="test_file_server.sh",
-            log_all=False)
+        run_and_return_output(self.create_context({}),
+                              script_path="test_file_server.sh",
+                              log_all=False)
 
         # check the download_resource actually worked
         self.assertTrue(os.path.exists(expected_path))
