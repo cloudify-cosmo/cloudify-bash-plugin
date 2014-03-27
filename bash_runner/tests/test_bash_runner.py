@@ -20,7 +20,9 @@ import unittest
 from cloudify.mocks import MockCloudifyContext
 from cloudify.constants import MANAGER_IP_KEY, \
     MANAGER_FILE_SERVER_BLUEPRINTS_ROOT_URL_KEY, MANAGER_FILE_SERVER_URL_KEY
+
 from bash_runner.tasks import run_and_return_output
+
 from bash_runner.tasks import ProcessException
 from bash_runner.tasks import run
 import bash_runner.tests as test_path
@@ -153,9 +155,9 @@ class TestBashRunner(unittest.TestCase):
         try:
             run_and_return_output(self.create_context({}),
                                   script_path="bad.sh")
+            self.fail("Expected exception")
         except ProcessException as e:
-            self.assertTrue('bad_command: command not found' in e.stderr)
-            self.assertTrue(e.exit_code is not 0)
+            self.assertEqual(5, e.exit_code)
 
     def test_logging(self):
 

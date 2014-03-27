@@ -1,2 +1,2 @@
 #!/bin/sh
-bad_command
+exit 5
