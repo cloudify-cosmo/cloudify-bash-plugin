@@ -1,5 +1,5 @@
 #!/bin/sh
 . ${CLOUDIFY_LOGGING}
 
-cfy-info THIS IS AN INFO PRINT
-cfy-error THIS IS AN ERROR PRINT
+cfy_info THIS IS AN INFO PRINT
+cfy_error THIS IS AN ERROR PRINT
