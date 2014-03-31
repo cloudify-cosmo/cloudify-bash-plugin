@@ -56,7 +56,7 @@ to enable this function add the following line at the beginning of your script:
 for example:
 
     . ${CLOUDIFY_FILE_SERVER}
-    download_resource index.html
+    cfy_download_resource index.html
 
 index.html in this example should be placed in the root of the blueprint folder.
 
@@ -71,8 +71,8 @@ function add the following line at the beginning of your script:
 
 for example:
 
-    info THIS IS AN INFO PRINT
-    error THIS IS AN ERROR PRINT
+    cfy_info THIS IS AN INFO PRINT
+    cfy_error THIS IS AN ERROR PRINT
 
 This messages will be stored in Cloudify's logging mechanism and be viewed as regular logs. As such,
 they will be displayed in the CLI, as well as the Web interface.
