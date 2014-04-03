@@ -6,8 +6,8 @@ This plugin allows the execution of bash scripts as part of a node interface ope
 
 **built-in bash types**
 
-Cloudify offers some built in types, who's lifecycle interface (see [Lifecycle Interface](https://github.com/CloudifySource/cosmo-manager/blob/develop/orchestrator/src/main/resources/cloudify/types/types.yaml#L18)) is mapped to execute bash scripts by default. 
-When using these types, a property by the name of 'scrtips' should be part of the node properties, which mapps each interface operation to a sepcific script.
+Cloudify offers some built in types, whose lifecycle interface (see [Lifecycle Interface](https://github.com/CloudifySource/cosmo-manager/blob/develop/orchestrator/src/main/resources/cloudify/types/types.yaml#L18)) is mapped to execute bash scripts by default. 
+When using these types, a property by the name of 'scripts' should be part of the node properties, mapping each interface operation to a specific script.
 
 for example:
 
@@ -19,7 +19,7 @@ for example:
             start: scripts/start.sh
             stop: scripts/stop.sh
 
-This means that the 'configure', 'start' and 'stop' operations will be executed by the 'configure.sh', 'start.sh' and 'stop.sh' scripts. You can of course create you own interface and map any operation to any script.
+This means that the 'configure', 'start' and 'stop' operations will be executed by the 'configure.sh', 'start.sh' and 'stop.sh' scripts respectively. You can of course create you own interface and map any operation to any script.
 
 for a complete example of the usage see [Cloudify Hello World](https://github.com/CloudifySource/cloudify-hello-world/blob/feature/CFY-430-hello-world-bash/hello-world/blueprint.yaml)
 
