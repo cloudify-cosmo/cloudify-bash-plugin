@@ -25,7 +25,7 @@ PLUGINS_COMMON = "https://github.com/cloudify-cosmo" \
 
 setup(
     name='cloudify-bash-plugin',
-    version='1.0',
+    version='1.0b1',
     author='rantav',
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
