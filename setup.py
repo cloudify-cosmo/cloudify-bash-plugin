@@ -17,15 +17,15 @@ __author__ = 'rantav'
 
 from setuptools import setup
 
-PLUGINS_COMMON_VERSION = "3.0b1"
-PLUGINS_COMMON_BRANCH = "3.0b1"
+PLUGINS_COMMON_VERSION = "3.0"
+PLUGINS_COMMON_BRANCH = "3.0"
 PLUGINS_COMMON = "https://github.com/cloudify-cosmo" \
     "/cloudify-plugins-common/tarball/{0}"\
     .format(PLUGINS_COMMON_BRANCH)
 
 setup(
     name='cloudify-bash-plugin',
-    version='1.0b1',
+    version='1.0',
     author='rantav',
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
