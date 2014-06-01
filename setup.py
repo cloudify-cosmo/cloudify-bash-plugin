@@ -34,4 +34,3 @@ setup(
     description='Plugin for running simple bash scripts',
     install_requires=install_requires
 )
-
