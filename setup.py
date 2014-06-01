@@ -16,12 +16,11 @@
 __author__ = 'rantav'
 
 from setuptools import setup
+from pip.req import parse_requirements
 
-PLUGINS_COMMON_VERSION = "3.0"
-PLUGINS_COMMON_BRANCH = "develop"
-PLUGINS_COMMON = "https://github.com/cloudify-cosmo" \
-    "/cloudify-plugins-common/tarball/{0}"\
-    .format(PLUGINS_COMMON_BRANCH)
+install_requires = [
+    str(ir.req) for ir in parse_requirements('requirements.txt')]
+
 
 setup(
     name='cloudify-bash-plugin',
@@ -33,8 +32,5 @@ setup(
                                   'resources/logging.sh']},
     license='LICENSE',
     description='Plugin for running simple bash scripts',
-    install_requires=[
-        "cloudify-plugins-common"
-    ],
-    dependency_links=["{0}#egg=cloudify-plugins-common-{1}"
-                      .format(PLUGINS_COMMON, PLUGINS_COMMON_VERSION)])
+    install_requires=install_requires
+)
