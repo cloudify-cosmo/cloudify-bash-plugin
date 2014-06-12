@@ -16,10 +16,10 @@
 __author__ = 'rantav'
 
 from setuptools import setup
-from pip.req import parse_requirements
+# from pip.req import parse_requirements
 
-install_requires = [
-    str(ir.req) for ir in parse_requirements('requirements.txt')]
+# install_requires = [
+#     str(ir.req) for ir in parse_requirements('requirements.txt')]
 
 
 setup(
@@ -32,5 +32,7 @@ setup(
                                   'resources/logging.sh']},
     license='LICENSE',
     description='Plugin for running simple bash scripts',
-    install_requires=install_requires
+    install_requires=[
+        'cloudify-plugins-common==3.0',
+    ]
 )
