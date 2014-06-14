@@ -2,18 +2,21 @@
 
 all:
 	@echo "make release - prepares a release and publishes it"
-	@echo "make test - run tox"
-	@echo "make publish - upload to pypi"
+	@echo "make dev - prepares a development environment (includes tests)"
+	@echo "make instdev - prepares a development environment (no tests)"
 	@echo "make install - install on local system"
 	@echo "make files - update changelog and todo files"
+	@echo "make test - run tox"
 	@echo "make docs - build docs"
-	@echo "prepare - prepare module for release"
+	@echo "prepare - prepare module for release (CURRENTLY IRRELEVANT)"
+	@echo "make publish - upload to pypi"
 
-release: test docs prepare publish
+release: test docs publish
 
-dev: instdev docs
+dev: instdev test
 
 instdev:
+	pip install -rtest-requirements.txt
 	python setup.py develop
 
 install:
@@ -27,6 +30,7 @@ test:
 	tox
 
 docs:
+	pip install sphinx sphinx-rtd-theme
 	cd docs && make html
 	pandoc README.md -f markdown -t rst -s -o README.rst
 
