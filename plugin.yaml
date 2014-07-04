@@ -2,7 +2,7 @@
 # Cloudify Bash built in types and plugins definitions.
 ##################################################################################
 imports:
-    - cloudify.types
+    - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-manager/develop/resources/rest-service/cloudify/types/types.yaml
 
 plugins:
     bash_runner:
