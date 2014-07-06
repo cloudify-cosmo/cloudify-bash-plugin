@@ -33,6 +33,6 @@ setup(
     license='LICENSE',
     description='Plugin for running simple bash scripts',
     install_requires=[
-        'cloudify-plugins-common==3.0',
+        'cloudify-plugins-common>=3.0',
     ]
 )
