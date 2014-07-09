@@ -19,5 +19,5 @@ import pkgutil
 
 
 def get_version():
-    data = pkgutil.get_data('cosmo_cli', 'VERSION')
+    data = pkgutil.get_data('bash_runner', 'VERSION')
     return json.loads(data)['version']
