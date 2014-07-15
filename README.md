@@ -1,6 +1,6 @@
 # Cloudify Bash Plugin
 
-This plugin allows the execution of bash scripts as part of a node interface opeations.
+This plugin allows mapping bash shell scripts to node operations.
 
 ## Usage
 
