@@ -17,24 +17,21 @@ __author__ = 'rantav'
 
 from setuptools import setup
 
-PLUGINS_COMMON_VERSION = "3.0"
-PLUGINS_COMMON_BRANCH = "3.0"
-PLUGINS_COMMON = "https://github.com/cloudify-cosmo" \
-    "/cloudify-plugins-common/tarball/{0}"\
-    .format(PLUGINS_COMMON_BRANCH)
+from bash_runner import get_version
+
 
 setup(
     name='cloudify-bash-plugin',
-    version='1.0',
+    version=get_version(),
     author='rantav',
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
     package_data={'bash_runner': ['resources/file_server.sh',
-                                  'resources/logging.sh']},
+                                  'resources/logging.sh',
+                                  'VERSION']},
     license='LICENSE',
     description='Plugin for running simple bash scripts',
     install_requires=[
-        "cloudify-plugins-common"
-    ],
-    dependency_links=["{0}#egg=cloudify-plugins-common-{1}"
-                      .format(PLUGINS_COMMON, PLUGINS_COMMON_VERSION)])
+        'cloudify-plugins-common>=3.0',
+    ]
+)
