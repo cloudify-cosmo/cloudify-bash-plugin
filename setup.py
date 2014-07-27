@@ -17,12 +17,10 @@ __author__ = 'rantav'
 
 from setuptools import setup
 
-from bash_runner import get_version
-
 
 setup(
     name='cloudify-bash-plugin',
-    version=get_version(),
+    version='1.1',
     author='rantav',
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
