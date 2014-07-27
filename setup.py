@@ -25,8 +25,7 @@ setup(
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
     package_data={'bash_runner': ['resources/file_server.sh',
-                                  'resources/logging.sh',
-                                  'VERSION']},
+                                  'resources/logging.sh']}
     license='LICENSE',
     description='Plugin for running simple bash scripts',
     install_requires=[
