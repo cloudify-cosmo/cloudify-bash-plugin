@@ -3,7 +3,7 @@
 ##################################################################################
 
 plugins:
-    bash-plugin:
+    bash:
         derived_from: cloudify.plugins.agent_plugin
         properties:
             url: https://github.com/cloudify-cosmo/cloudify-bash-plugin/archive/{{ plugin_branch }}.zip
@@ -15,11 +15,11 @@ node_types:
         derived_from: cloudify.types.web_server
         interfaces:
             cloudify.interfaces.lifecycle:
-                - create: bash-plugin.bash_runner.tasks.run
-                - configure: bash-plugin.bash_runner.tasks.run
-                - start: bash-plugin.bash_runner.tasks.run
-                - stop: bash-plugin.bash_runner.tasks.run
-                - delete: bash-plugin.bash_runner.tasks.run
+                - create: bash.bash_runner.tasks.run
+                - configure: bash.bash_runner.tasks.run
+                - start: bash.bash_runner.tasks.run
+                - stop: bash.bash_runner.tasks.run
+                - delete: bash.bash_runner.tasks.run
         properties:
             scripts: {}
 
@@ -28,11 +28,11 @@ node_types:
         derived_from: cloudify.types.app_server
         interfaces:
             cloudify.interfaces.lifecycle:
-                - create: bash-plugin.bash_runner.tasks.run
-                - configure: bash-plugin.bash_runner.tasks.run
-                - start: bash-plugin.bash_runner.tasks.run
-                - stop: bash-plugin.bash_runner.tasks.run
-                - delete: bash-plugin.bash_runner.tasks.run
+                - create: bash.bash_runner.tasks.run
+                - configure: bash.bash_runner.tasks.run
+                - start: bash.bash_runner.tasks.run
+                - stop: bash.bash_runner.tasks.run
+                - delete: bash.bash_runner.tasks.run
         properties:
             scripts: {}
 
@@ -41,11 +41,11 @@ node_types:
         derived_from: cloudify.types.db_server
         interfaces:
             cloudify.interfaces.lifecycle:
-                - create: bash-plugin.bash_runner.tasks.run
-                - configure: bash-plugin.bash_runner.tasks.run
-                - start: bash-plugin.bash_runner.tasks.run
-                - stop: bash-plugin.bash_runner.tasks.run
-                - delete: bash-plugin.bash_runner.tasks.run
+                - create: bash.bash_runner.tasks.run
+                - configure: bash.bash_runner.tasks.run
+                - start: bash.bash_runner.tasks.run
+                - stop: bash.bash_runner.tasks.run
+                - delete: bash.bash_runner.tasks.run
         properties:
             scripts: {}
 
@@ -54,11 +54,11 @@ node_types:
         derived_from: cloudify.types.message_bus_server
         interfaces:
             cloudify.interfaces.lifecycle:
-                - create: bash-plugin.bash_runner.tasks.run
-                - configure: bash-plugin.bash_runner.tasks.run
-                - start: bash-plugin.bash_runner.tasks.run
-                - stop: bash-plugin.bash_runner.tasks.run
-                - delete: bash-plugin.bash_runner.tasks.run
+                - create: bash.bash_runner.tasks.run
+                - configure: bash.bash_runner.tasks.run
+                - start: bash.bash_runner.tasks.run
+                - stop: bash.bash_runner.tasks.run
+                - delete: bash.bash_runner.tasks.run
         properties:
             scripts: {}
 
@@ -67,10 +67,10 @@ node_types:
         derived_from: cloudify.types.app_module
         interfaces:
             cloudify.interfaces.lifecycle:
-                - create: bash-plugin.bash_runner.tasks.run
-                - configure: bash-plugin.bash_runner.tasks.run
-                - start: bash-plugin.bash_runner.tasks.run
-                - stop: bash-plugin.bash_runner.tasks.run
-                - delete: bash-plugin.bash_runner.tasks.run
+                - create: bash.bash_runner.tasks.run
+                - configure: bash.bash_runner.tasks.run
+                - start: bash.bash_runner.tasks.run
+                - stop: bash.bash_runner.tasks.run
+                - delete: bash.bash_runner.tasks.run
         properties:
             scripts: {}
