@@ -4,9 +4,8 @@
 
 plugins:
     bash:
-        derived_from: cloudify.plugins.agent_plugin
-        properties:
-            url: https://github.com/cloudify-cosmo/cloudify-bash-plugin/archive/{{ plugin_branch }}.zip
+        executor: host_agent
+        source: https://github.com/cloudify-cosmo/cloudify-bash-plugin/archive/{{ plugin_branch }}.zip
 
 node_types:
 
