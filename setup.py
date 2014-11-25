@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='cloudify-bash-plugin',
-    version='3.1ga',
+    version='3.1',
     author='rantav',
     author_email='rantav@gmail.com',
     packages=['bash_runner', 'bash_runner/resources'],
@@ -29,6 +29,6 @@ setup(
     license='LICENSE',
     description='Plugin for running simple bash scripts',
     install_requires=[
-        'cloudify-plugins-common==3.1ga',
+        'cloudify-plugins-common==3.1',
     ]
 )
